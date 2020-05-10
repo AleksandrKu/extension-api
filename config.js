@@ -1,13 +1,10 @@
 'use strict';
 
-const PORT = process.env.PORT || 443;
-const host = process.env.HOST || '0.0.0.0';
-
+const PORT = process.env.PORT || '80';
 console.log({ PORT });
-console.log({ host });
 
 module.exports = {
-  hostname: 'localhost',
+  hostname: 'fixie:xZJtGPNC6EXuRIx@olympic.usefixie.com',
   ports: [PORT],
   apiUrl: 'io.cargo.lt',
   getTokenPath: '/accounts/signin',

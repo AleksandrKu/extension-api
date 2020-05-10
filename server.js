@@ -51,6 +51,7 @@ const preparingBody = body => {
 const routing = {
   '/accounts/signin': async (req, res) => {
     let body = [];
+    console.log(req);
     req
       .on('data', chunk => body.push(chunk))
       .on('end', async () => {
@@ -63,7 +64,9 @@ const routing = {
         }
         console.log('body', body);
         const { status, data } = await getToken(apiUrl, getTokenPath, body);
-        res.writeHead(status);
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+        res.writeHead(status, { 'Content-Type': 'text/plain' });
         return res.end(data);
       });
   },
