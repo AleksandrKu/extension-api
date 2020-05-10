@@ -24,7 +24,7 @@ const preparingBody = body => {
   const originName = body.origin.split(' ')[2];
   const destinationsCountry = body.destinations.split(',')[0];
   const destinationsName = body.destinations.split(' ')[2];
-  const type = trucks.has(body.type) ? trucks.get(body.type) : 55;
+  //const type = trucks.has(body.type) ? trucks.get(body.type) : 55;
   const volumeldm = body.volumeldm;
   const weight = body.weight;
   const response = {
@@ -40,7 +40,7 @@ const preparingBody = body => {
         name: destinationsName,
       },
     ],
-    type,
+    // type,
     fromDate,
     tillDate,
     volumeldm,
@@ -77,7 +77,7 @@ const routing = {
         try {
           accessToken = req.headers['access-token'];
           body = { ...args };
-         // body = preparingBody(body);
+          // body = preparingBody(body);
         } catch (err) {
           res.writeHead(400);
           return res.end('Bag request');
