@@ -2,7 +2,7 @@
 
 const http = require('http');
 const config = require('./config');
-const { trucks } = require('./types');
+//const { trucks } = require('./types');
 const pid = process.pid;
 const hostname = config.hostname;
 const port = config.ports[0];
