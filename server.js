@@ -77,7 +77,7 @@ const routing = {
         try {
           accessToken = req.headers['access-token'];
           body = { ...args };
-          body = preparingBody(body);
+         // body = preparingBody(body);
         } catch (err) {
           res.writeHead(400);
           return res.end('Bag request');
