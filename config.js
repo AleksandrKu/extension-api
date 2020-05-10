@@ -1,8 +1,11 @@
 'use strict';
 
+const PORT = process.env.PORT || 80;
+
+
 module.exports = {
-  hostname: '127.0.0.1',
-  ports: [8000],
+  hostname: 'cargo-extention-api.herokuapp.com',
+  ports: [PORT],
   apiUrl: 'io.cargo.lt',
   getTokenPath: '/accounts/signin',
   sendCargoPath: '/cargos',
