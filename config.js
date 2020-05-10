@@ -7,7 +7,7 @@ console.log({ PORT });
 console.log({ host });
 
 module.exports = {
-  hostname: 'cargo-extention-api.herokuapp.com',
+  hostname: 'localhost',
   ports: [PORT],
   apiUrl: 'io.cargo.lt',
   getTokenPath: '/accounts/signin',
