@@ -1,6 +1,6 @@
 'use strict';
 
-const http = require('http');
+const http = require('https');
 const config = require('./config');
 //const { trucks } = require('./types');
 const pid = process.pid;
