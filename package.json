@@ -1,0 +1,19 @@
+{
+  "name": "api-extention-trans",
+  "version": "1.0.0",
+  "description": "Api for extension",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AleksandrKu/extension-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AleksandrKu/extension-api/issues"
+  },
+  "homepage": "https://github.com/AleksandrKu/extension-api#readme"
+}
