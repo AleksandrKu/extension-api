@@ -1,6 +1,6 @@
 'use strict';
 
-const PORT = process.env.PORT || '3000';
+const PORT = process.env.PORT || '8000';
 console.log({ PORT });
 
 module.exports = {

@@ -1,6 +1,6 @@
 'use strict';
 
-const http = require('https');
+const http = require('http');
 const config = require('./config');
 //const { trucks } = require('./types');
 const pid = process.pid;
@@ -88,7 +88,11 @@ const routing = {
           return res.end('Bag request');
         }
         const { status, data } = await sendCargo(apiUrl, sendCargoPath, body, accessToken);
-        res.writeHead(status);
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
+        res.writeHead(status, { 'Content-Type': 'text/plain' });
         return res.end(data);
       });
   },
