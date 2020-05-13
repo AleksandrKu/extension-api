@@ -49,30 +49,22 @@ const preparingBody = body => {
   return response;
 };
 const routing = {
-  '/accounts/signin': async (req, res) => {
+  '/accounts/signin': (req, res) => new Promise((resolve, reject) => {
     let body = [];
-    console.log(req);
     req
       .on('data', chunk => body.push(chunk))
       .on('end', async () => {
-        const args = JSON.parse(body.join(''));
         try {
+          const args = JSON.parse(body.join(''));
           body = { login: args.login, password: args.password };
         } catch (err) {
-          res.writeHead(400);
-          return res.end('Bag body');
+          resolve({ status: 400, data: 'Bag body' });
         }
         console.log('body', body);
-        const { status, data } = await getToken(apiUrl, getTokenPath, body);
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Credentials', true);
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
-        res.writeHead(status, { 'Content-Type': 'text/plain' });
-        return res.end(data);
+        resolve(await getToken(apiUrl, getTokenPath, body));
       });
-  },
-  '/cargos': async (req, res) => {
+  }),
+  '/cargos': (req, res) => new Promise((resolve, reject) => {
     let body = [];
     let accessToken;
     req
@@ -84,25 +76,35 @@ const routing = {
           body = { ...args };
           // body = preparingBody(body);
         } catch (err) {
-          res.writeHead(400);
-          return res.end('Bag request');
+          resolve({ status: 400, data: 'Bad response' });
         }
-        const { status, data } = await sendCargo(apiUrl, sendCargoPath, body, accessToken);
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Credentials', true);
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
-        res.writeHead(status, { 'Content-Type': 'text/plain' });
-        return res.end(data);
+        resolve(await sendCargo(apiUrl, sendCargoPath, body, accessToken));
       });
-  },
+  }),
+  '/': (req, res) => new Promise((resolve, reject) => {
+    req.on('end', () => resolve({ status: 200, data: 'Start page! No content!' }));
+  }),
+  '/favicon.ico': (req, res) => new Promise((resolve, reject) => {
+    req.on('end', () => resolve({ status: 200, data: 'No favicon!' }));
+  }),
 };
 
 http
   .createServer(async (req, res) => {
     console.log(req.url);
     console.log(req.method);
-    await routing[req.url](req, res);
+    const routs = ['/accounts/signin', '/cargos', '/', '/favicon.ico'];
+    if (req.url && routs.includes(req.url)) {
+      const { status, data } = await routing[req.url](req, res);
+      console.log(status, data);
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Credentials', true);
+      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+      res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
+      res.writeHead(status, { 'Content-Type': 'text/plain' });
+      return res.end(data);
+    }
+    res.end('Bad rout!');
   })
   .listen(port, hostname, err => {
     if (err) return console.log('something bad happened', err);
