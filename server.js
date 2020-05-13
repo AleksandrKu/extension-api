@@ -65,7 +65,9 @@ const routing = {
         console.log('body', body);
         const { status, data } = await getToken(apiUrl, getTokenPath, body);
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
         res.writeHead(status, { 'Content-Type': 'text/plain' });
         return res.end(data);
       });
