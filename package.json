@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/AleksandrKu/extension-api/issues"
   },
+  "dependencies": {
+    "express": "~4.16.1"
+  },
   "homepage": "https://github.com/AleksandrKu/extension-api#readme"
 }

@@ -1,119 +1,50 @@
 'use strict';
 
+const app = require('./app');
+//const debug = require('debug')('express:server');
 const http = require('http');
-const config = require('./config');
-//const { trucks } = require('./types');
-const pid = process.pid;
-const hostname = config.hostname;
-const port = config.ports[0];
-const apiUrl = config.apiUrl;
-const getTokenPath = config.getTokenPath;
-const sendCargoPath = config.sendCargoPath;
 
-const { getToken, sendCargo } = require('./api');
-const preparingBody = body => {
-  const fromDates = body.fromDate.split('.');
-  let fromDate = new Date(fromDates[2], fromDates[1], fromDates[0], body.fromTime.split(':')[0], 0, 0, 0);
-  fromDate = fromDate.getTime() * 0.001;
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
 
-  const toDates = body.toDate.split('.');
-  let tillDate = new Date(toDates[2], toDates[1], toDates[0], body.toTime.split(':')[0], 0, 0, 0);
-  tillDate = tillDate.getTime() * 0.001;
+const server = http.createServer(app);
 
-  const originCountry = body.origin.split(',')[0];
-  const originName = body.origin.split(' ')[2];
-  const destinationsCountry = body.destinations.split(',')[0];
-  const destinationsName = body.destinations.split(' ')[2];
-  //const type = trucks.has(body.type) ? trucks.get(body.type) : 55;
-  const volumeldm = body.volumeldm;
-  const weight = body.weight;
-  const response = {
-    origins: [
-      {
-        country: originCountry,
-        name: originName,
-      },
-    ],
-    destinations: [
-      {
-        country: destinationsCountry,
-        name: destinationsName,
-      },
-    ],
-    // type,
-    fromDate,
-    tillDate,
-    volumeldm,
-    weight
-  };
-  return response;
-};
-const routing = {
-  '/accounts/signin': (req, res) => new Promise((resolve, reject) => {
-    let body = [];
-    req
-      .on('data', chunk => body.push(chunk))
-      .on('end', async () => {
-        try {
-          const args = JSON.parse(body.join(''));
-          body = { login: args.login, password: args.password };
-        } catch (err) {
-          resolve({ status: 400, data: 'Bag body' });
-        }
-        console.log('body', body);
-        resolve(await getToken(apiUrl, getTokenPath, body));
-      });
-  }),
-  '/cargos': (req, res) => new Promise((resolve, reject) => {
-    let body = [];
-    let accessToken;
-    req
-      .on('data', chunk => body.push(chunk))
-      .on('end', async () => {
-        const args = JSON.parse(body.join(''));
-        try {
-          accessToken = req.headers['access-token'];
-          body = { ...args };
-          // body = preparingBody(body);
-        } catch (err) {
-          resolve({ status: 400, data: 'Bad response' });
-        }
-        resolve(await sendCargo(apiUrl, sendCargoPath, body, accessToken));
-      });
-  }),
-  '/': (req, res) => new Promise((resolve, reject) => {
-    req.on('end', () => resolve({ status: 200, data: 'Start page! No content!' }));
-  }),
-  '/favicon.ico': (req, res) => new Promise((resolve, reject) => {
-    req.on('end', () => resolve({ status: 200, data: 'No favicon!' }));
-  }),
-};
+server.listen(port, () => console.log(`Server on port ${port}`));
+server.on('error', onError);
 
-http
-  .createServer(async (req, res) => {
-    console.log(req.url);
-    console.log(req.method);
-    const routs = ['/accounts/signin', '/cargos', '/', '/favicon.ico'];
-    if (req.url && routs.includes(req.url)) {
-      const { status, data } = await routing[req.url](req, res);
-      console.log(status, data);
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Credentials', true);
-      res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');
-      res.writeHead(status, { 'Content-Type': 'text/plain' });
-      return res.end(data);
-    }
-    res.end('Bad rout!');
-  })
-  .listen(port, hostname, err => {
-    if (err) return console.log('something bad happened', err);
-    console.log(`Server running at http://${hostname}:${port}/ . Pid: ${pid}`);
-  })
-  .on('error', err => {
-    console.log(err);
-    if (err.code === 'EACCES') console.log(`No access to port: ${port}`);
-  })
-  .on('clientError', (err, socket) => {
-    socket.end('HTTP/1.1 400 Bad Request');
-  });
+function normalizePort(val) {
+  const port = parseInt(val, 10);
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
+  return false;
+}
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  switch (error.code) {
+  case 'EACCES':
+    console.error(bind + ' requires elevated privileges');
+    process.exit(1);
+    break;
+  case 'EADDRINUSE':
+    console.error(bind + ' is already in use');
+    process.exit(1);
+    break;
+  default:
+    throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+/* function onListening() {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+} */
