@@ -6,6 +6,7 @@ const apiUrl = config.apiUrl;
 const sendCargoPath = config.sendCargoPath;
 
 const sendCargo = async (body, accessToken) => {
+  console.log({ body });
   body = JSON.stringify(body);
   const options = {
     hostname: apiUrl,
@@ -14,7 +15,7 @@ const sendCargo = async (body, accessToken) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Content-Length': body.length + 1,
+      //'Content-Length': body.length + 1,
       'Access-Token': accessToken
     }
   };
