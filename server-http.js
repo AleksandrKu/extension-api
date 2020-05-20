@@ -70,6 +70,7 @@ const routing = {
     req
       .on('data', chunk => body.push(chunk))
       .on('end', async () => {
+        console.log(body);
         const args = JSON.parse(body.join(''));
         try {
           accessToken = req.headers['access-token'];
