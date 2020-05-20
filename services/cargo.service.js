@@ -6,7 +6,7 @@ const apiUrl = config.apiUrl;
 const sendCargoPath = config.sendCargoPath;
 
 const sendCargo = async (body, accessToken) => {
-  console.log({ body });
+  console.dir(body, { depth: null });
   body = JSON.stringify(body);
   const options = {
     hostname: apiUrl,
