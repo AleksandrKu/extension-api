@@ -20,6 +20,8 @@ const sendCargo = async (body, accessToken) => {
   };
   const { statusCode, args } = await httpsRequest(options, body);
   let response = null;
+  console.log(statusCode);
+  console.log(args);
   if (args.message && args.id) response = { status: statusCode, data: `${args.message} id: ${args.id}` };
   if (args.error && args.error.message) response = { status: 403, data: args.error.message };
   return response;
