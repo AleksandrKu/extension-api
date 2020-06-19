@@ -20,7 +20,7 @@ const getToken = async body => {
   const { statusCode, args } = await httpsRequest(options, data);
   let response = null;
   console.log(args);
-  if (args.accessToken) response = { status: statusCode, data: args.accessToken };
+  if (args.accessToken) response = { status: statusCode, data: args.accessToken, userId: args.userId };
   if (args.error && args.error.message) response = { status: 403, data: args.error.message };
   return response;
 };
