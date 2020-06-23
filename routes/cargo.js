@@ -5,8 +5,7 @@ const router = express.Router();
 const { sendCargo } = require('../services/cargo.service');
 
 router.post('/', async (req, res) => {
-  const accessToken = req.headers['access-token'];
-  const cargo = await sendCargo(req.body, accessToken);
+  const cargo = await sendCargo(req.body);
   if (cargo) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Authorization');

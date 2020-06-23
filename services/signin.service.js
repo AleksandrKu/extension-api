@@ -20,7 +20,19 @@ const getToken = async body => {
   const { statusCode, args } = await httpsRequest(options, data);
   let response = null;
   console.log(args);
-  if (args.accessToken) response = { status: statusCode, data: args.accessToken, userId: args.userId };
+  if (args.accessToken) {
+    const userId = Buffer.from(String(args.userId)).toString('base64');
+    const login = Buffer.from(body.login).toString('base64');
+    const password = Buffer.from(body.password).toString('base64');
+    response = {
+      status: statusCode,
+      data: args.accessToken,
+      userId,
+      login,
+      password,
+    };
+  }
+  console.log(response);
   if (args.error && args.error.message) response = { status: 403, data: args.error.message };
   return response;
 };
