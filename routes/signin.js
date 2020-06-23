@@ -5,6 +5,7 @@ const router = express.Router();
 const { getToken } = require('../services/signin.service');
 
 router.post('/', async (req, res) => {
+   console.log(req.body);
   const token = await getToken(req.body);
   if (token) {
     res.setHeader('Access-Control-Allow-Origin', '*');

@@ -2,6 +2,7 @@
 const https = require('https');
 
 const httpsRequest = async (options, data) => new Promise((resolve, reject) => {
+  console.log(data);
   setTimeout(() => resolve({ status: 400, data: 'Timeout error' }), 6000);
   const req = https.request(options, async res => {
     const data = [];
